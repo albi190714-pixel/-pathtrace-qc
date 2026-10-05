@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>PathTrace QC · AP-001</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="shell">
+    <header class="hero">
+      <div class="brand"><span>PT</span><b>QC</b></div>
+      <div class="eyebrow">PathTrace QC · Sistema digital de trazabilidad y control de calidad</div>
+      <h1>Pasaporte Digital de Calidad</h1>
+      <div class="sample-row"><div><small>MUESTRA</small><strong>AP-001</strong></div><span class="status">● PROCESAMIENTO CONFORME</span></div>
+      <div class="summary"><span>✓ Trazabilidad completa</span><span>✓ 7/7 controles superados</span><span>✓ Material archivado</span></div>
+    </header>
+
+    <section class="card">
+      <div class="section-title"><span>01</span><h2>Identificación y trazabilidad</h2></div>
+      <div class="grid two">
+        <div class="field"><small>Código único</small><b>AP-001</b></div>
+        <div class="field"><small>Estado</small><b>Finalizado</b></div>
+        <div class="field"><small>Tipo de registro</small><b>Control histológico</b></div>
+        <div class="field"><small>Registro</small><b>PTQC-AP001</b></div>
+      </div>
+      <p class="note">Caso demostrativo ficticio. No contiene datos identificativos de pacientes.</p>
+    </section>
+
+    <section class="card">
+      <div class="section-title"><span>02</span><h2>Recorrido de la muestra</h2></div>
+      <div class="progress" id="progress">
+        <div class="step"><i>✓</i><b>Recepción</b><small>Control superado</small></div>
+        <div class="step"><i>✓</i><b>Fijación</b><small>Control superado</small></div>
+        <div class="step"><i>✓</i><b>Inclusión</b><small>Control superado</small></div>
+        <div class="step"><i>✓</i><b>Microtomía</b><small>Control superado</small></div>
+        <div class="step"><i>✓</i><b>Tinción</b><small>Control superado</small></div>
+        <div class="step"><i>✓</i><b>Montaje</b><small>Control superado</small></div>
+        <div class="step"><i>✓</i><b>Archivo</b><small>Control superado</small></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-title"><span>03</span><h2>Indicadores de calidad</h2></div>
+      <div class="metrics">
+        <article><span>⏱</span><div><b>Tiempo de fijación</b><small>Intervalo establecido</small></div><em>CONFORME</em></article>
+        <article><span>◫</span><div><b>Calidad del corte</b><small>Uniformidad e integridad</small></div><em>CONFORME</em></article>
+        <article><span>◉</span><div><b>Calidad de tinción</b><small>Contraste y homogeneidad</small></div><em>CONFORME</em></article>
+        <article><span>◇</span><div><b>Calidad del montaje</b><small>Integridad y visualización</small></div><em>CONFORME</em></article>
+        <article><span>↗</span><div><b>Trazabilidad</b><small>Correspondencia del código</small></div><em>100 %</em></article>
+        <article><span>↻</span><div><b>Tasa de repetición</b><small>Registro del sistema</small></div><em>SIN REPETICIÓN</em></article>
+        <article><span>⊘</span><div><b>Tasa de rechazo</b><small>Registro del sistema</small></div><em>ACEPTADA</em></article>
+        <article><span>!</span><div><b>No conformidades</b><small>Incidencias registradas</small></div><em>0</em></article>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-title"><span>04</span><h2>Historial de trazabilidad</h2></div>
+      <button class="toggle" id="toggleHistory" aria-expanded="false">Ver historial completo <span>⌄</span></button>
+      <div class="timeline collapsed" id="history">
+        <div><i></i><p><b>Recepción</b><small>Muestra registrada e identificación verificada.</small></p><strong>✓</strong></div>
+        <div><i></i><p><b>Fijación</b><small>Control de conservación superado.</small></p><strong>✓</strong></div>
+        <div><i></i><p><b>Inclusión</b><small>Bloque de parafina obtenido y controlado.</small></p><strong>✓</strong></div>
+        <div><i></i><p><b>Microtomía</b><small>Corte histológico apto para tinción.</small></p><strong>✓</strong></div>
+        <div><i></i><p><b>Tinción</b><small>Preparación con tinción conforme.</small></p><strong>✓</strong></div>
+        <div><i></i><p><b>Montaje</b><small>Preparación definitiva conforme.</small></p><strong>✓</strong></div>
+        <div><i></i><p><b>Archivo</b><small>Preparación y material correctamente archivados.</small></p><strong>✓</strong></div>
+      </div>
+    </section>
+
+    <section class="card split">
+      <div>
+        <div class="section-title"><span>05</span><h2>Incidencias</h2></div>
+        <div class="empty"><b>✓ Sin incidencias registradas</b><p>No se han detectado no conformidades durante el procesamiento de AP-001.</p></div>
+      </div>
+      <div>
+        <div class="section-title"><span>06</span><h2>Resultado final</h2></div>
+        <div class="result"><strong>7/7</strong><div><b>CONTROLES SUPERADOS</b><small>Procesamiento conforme · Trazabilidad completa</small></div></div>
+      </div>
+    </section>
+
+    <section class="card">
+      <div class="section-title"><span>07</span><h2>Registro de control</h2></div>
+      <div class="grid two">
+        <div class="field"><small>Resultado</small><b>Conforme</b></div>
+        <div class="field"><small>Incidencias</small><b>Ninguna</b></div>
+        <div class="field"><small>Actuación</small><b>No requerida</b></div>
+        <div class="field"><small>Estado del registro</small><b>Cerrado</b></div>
+      </div>
+      <div class="stamp">PATH<span>TRACE</span> QC · REGISTRO DEMOSTRATIVO</div>
+    </section>
+
+    <footer>
+      <b>PathTrace QC</b><span>Proyecto académico · Control de calidad en Anatomía Patológica y Citodiagnóstico</span>
+    </footer>
+  </main>
+  <script src="script.js"></script>
+</body>
+</html>
