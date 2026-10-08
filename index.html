@@ -1,35 +1,833 @@
-<!doctype html>
+ <!doctype html>
 <html lang="es">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>PathTrace QC · AP-001</title>
+  <title>PathTrace QC · Control de calidad</title>
   <link rel="stylesheet" href="style.css" />
+
+  <style>
+    /* ===== AMPLIACIÓN PATHTRACE QC ===== */
+
+    .pt-nav{
+      position:sticky;
+      top:10px;
+      z-index:50;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-bottom:14px;
+      padding:9px;
+      background:rgba(255,255,255,.92);
+      border:1px solid var(--line);
+      border-radius:17px;
+      box-shadow:0 8px 30px rgba(61,44,65,.08);
+      backdrop-filter:blur(12px);
+    }
+
+    .pt-nav-brand{
+      display:flex;
+      align-items:center;
+      gap:8px;
+      padding-left:6px;
+      color:var(--plum);
+      font-size:12px;
+      font-weight:900;
+    }
+
+    .pt-logo{
+      display:inline-flex;
+      align-items:center;
+      gap:3px;
+      padding:6px 7px;
+      border-radius:9px;
+      background:var(--plum);
+      color:#fff;
+      font-size:9px;
+      letter-spacing:.08em;
+    }
+
+    .pt-logo b{
+      background:#fff;
+      color:var(--plum);
+      padding:2px 4px;
+      border-radius:4px;
+    }
+
+    .pt-tabs{
+      display:flex;
+      gap:5px;
+    }
+
+    .pt-tab{
+      border:0;
+      background:transparent;
+      color:var(--muted);
+      border-radius:11px;
+      padding:9px 12px;
+      font-size:10px;
+      font-weight:800;
+      cursor:pointer;
+    }
+
+    .pt-tab.active{
+      background:var(--lav);
+      color:var(--plum);
+    }
+
+    .pt-view{display:none}
+    .pt-view.active{display:block}
+
+    /* ===== HERO INFORME ===== */
+
+    .report-hero{
+      position:relative;
+      overflow:hidden;
+      padding:28px;
+      border-radius:28px;
+      color:#fff;
+      background:linear-gradient(135deg,#59445f,#725b78);
+      box-shadow:var(--shadow);
+    }
+
+    .report-hero:after{
+      content:"";
+      position:absolute;
+      width:260px;
+      height:260px;
+      right:-80px;
+      top:-100px;
+      border-radius:50%;
+      background:rgba(255,255,255,.06);
+    }
+
+    .report-top{
+      position:relative;
+      z-index:2;
+      display:flex;
+      justify-content:space-between;
+      gap:20px;
+      align-items:flex-start;
+    }
+
+    .report-hero h1{
+      margin:7px 0 8px;
+      font-size:clamp(28px,6vw,44px);
+      line-height:1.03;
+    }
+
+    .report-hero p{
+      max-width:590px;
+      margin:0;
+      font-size:12px;
+      line-height:1.6;
+      opacity:.8;
+    }
+
+    .period{
+      min-width:155px;
+      padding:12px;
+      border:1px solid rgba(255,255,255,.18);
+      border-radius:14px;
+      background:rgba(255,255,255,.09);
+    }
+
+    .period small,
+    .period strong{display:block}
+
+    .period small{
+      font-size:8px;
+      letter-spacing:.13em;
+      opacity:.65;
+    }
+
+    .period strong{
+      margin-top:4px;
+      font-size:11px;
+    }
+
+    .system-state{
+      position:relative;
+      z-index:2;
+      display:flex;
+      justify-content:space-between;
+      align-items:center;
+      gap:12px;
+      margin-top:22px;
+      padding-top:16px;
+      border-top:1px solid rgba(255,255,255,.18);
+    }
+
+    .system-state b{
+      font-size:11px;
+      letter-spacing:.03em;
+    }
+
+    .system-state span{
+      padding:7px 10px;
+      border-radius:999px;
+      background:#f6e8d6;
+      color:#76531f;
+      font-size:9px;
+      font-weight:900;
+    }
+
+    /* ===== KPI ===== */
+
+    .kpi-grid{
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:9px;
+    }
+
+    .kpi{
+      position:relative;
+      min-height:105px;
+      padding:14px;
+      text-align:left;
+      border:1px solid var(--line);
+      border-radius:15px;
+      background:var(--paper);
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .kpi:hover,
+    .kpi.selected{
+      transform:translateY(-2px);
+      border-color:#cdbfd0;
+      box-shadow:0 8px 20px rgba(61,44,65,.07);
+    }
+
+    .kpi small,
+    .kpi strong,
+    .kpi span{display:block}
+
+    .kpi small{
+      color:var(--muted);
+      font-size:8px;
+      letter-spacing:.08em;
+      font-weight:800;
+    }
+
+    .kpi strong{
+      margin:7px 0 3px;
+      color:var(--plum);
+      font-size:26px;
+    }
+
+    .kpi span{
+      color:var(--muted);
+      font-size:9px;
+    }
+
+    .kpi.good:after,
+    .kpi.watch:after{
+      content:"";
+      position:absolute;
+      width:8px;
+      height:8px;
+      right:12px;
+      top:12px;
+      border-radius:50%;
+    }
+
+    .kpi.good:after{background:#6c9879}
+    .kpi.watch:after{background:#c6924c}
+
+    .kpi-detail{
+      display:none;
+      margin-top:12px;
+      padding:13px 14px;
+      border-radius:13px;
+      background:var(--lav);
+      color:var(--ink);
+      font-size:10px;
+      line-height:1.55;
+    }
+
+    .kpi-detail.show{display:block}
+
+    /* ===== BALANCE ===== */
+
+    .balance-grid{
+      display:grid;
+      grid-template-columns:1fr 1fr;
+      gap:10px;
+    }
+
+    .balance-box{
+      padding:15px;
+      border-radius:15px;
+      border:1px solid var(--line);
+    }
+
+    .balance-box.good{background:#f1f7f2}
+    .balance-box.watch{background:#fbf5ea}
+
+    .balance-box small{
+      display:block;
+      margin-bottom:5px;
+      font-size:8px;
+      letter-spacing:.1em;
+      font-weight:900;
+    }
+
+    .balance-box h3{
+      margin:0;
+      font-size:12px;
+    }
+
+    .balance-box ul{
+      margin:12px 0 0;
+      padding-left:17px;
+      color:var(--muted);
+      font-size:10px;
+      line-height:1.75;
+    }
+
+    /* ===== BARRAS ===== */
+
+    .chart-note{
+      margin:-5px 0 18px;
+      color:var(--muted);
+      font-size:10px;
+    }
+
+    .bars{
+      display:grid;
+      gap:11px;
+    }
+
+    .bar-item{
+      display:grid;
+      grid-template-columns:92px 1fr 28px;
+      gap:10px;
+      align-items:center;
+      padding:5px;
+      border-radius:10px;
+      cursor:pointer;
+      transition:.2s ease;
+    }
+
+    .bar-item:hover,
+    .bar-item.active{
+      background:var(--paper);
+    }
+
+    .bar-item>span{
+      font-size:10px;
+      font-weight:700;
+    }
+
+    .bar-track{
+      height:12px;
+      overflow:hidden;
+      border-radius:999px;
+      background:#eee9ef;
+    }
+
+    .bar-fill{
+      width:0;
+      height:100%;
+      border-radius:999px;
+      background:linear-gradient(90deg,#b6a2bb,#755f7b);
+      transition:width 1s cubic-bezier(.2,.8,.2,1);
+    }
+
+    .bar-item.alert .bar-fill{
+      background:linear-gradient(90deg,#d6a4ad,#a95f6c);
+    }
+
+    .bar-item>b{
+      text-align:right;
+      color:var(--plum);
+      font-size:11px;
+    }
+
+    .stage-detail{
+      display:none;
+      margin-top:16px;
+      padding:14px;
+      border:1px solid var(--line);
+      border-radius:14px;
+      background:var(--paper);
+    }
+
+    .stage-detail.show{display:block}
+
+    .stage-detail small,
+    .stage-detail b{display:block}
+
+    .stage-detail small{
+      color:var(--muted);
+      font-size:8px;
+      letter-spacing:.09em;
+    }
+
+    .stage-detail b{
+      margin:4px 0 6px;
+      font-size:12px;
+    }
+
+    .stage-detail p{
+      margin:0;
+      color:var(--muted);
+      font-size:10px;
+      line-height:1.5;
+    }
+
+    /* ===== GRÁFICA SEMANAL ===== */
+
+    .weekly-chart{
+      position:relative;
+      height:230px;
+      margin-top:10px;
+      padding:15px 12px 32px 38px;
+    }
+
+    .weekly-grid{
+      position:absolute;
+      left:38px;
+      right:12px;
+      top:15px;
+      bottom:32px;
+      display:flex;
+      flex-direction:column;
+      justify-content:space-between;
+    }
+
+    .weekly-grid span{
+      display:block;
+      border-top:1px dashed #e5dee7;
+    }
+
+    .weekly-points{
+      position:absolute;
+      left:38px;
+      right:12px;
+      top:15px;
+      bottom:32px;
+    }
+
+    .trend-svg{
+      position:absolute;
+      inset:0;
+      width:100%;
+      height:100%;
+      overflow:visible;
+    }
+
+    .trend-path{
+      fill:none;
+      stroke:#755f7b;
+      stroke-width:3;
+      stroke-linecap:round;
+      stroke-linejoin:round;
+      stroke-dasharray:500;
+      stroke-dashoffset:500;
+      transition:stroke-dashoffset 1.5s ease;
+    }
+
+    .weekly-chart.animate .trend-path{
+      stroke-dashoffset:0;
+    }
+
+    .week-point{
+      position:absolute;
+      transform:translate(-50%,50%);
+      text-align:center;
+    }
+
+    .week-point i{
+      display:block;
+      width:13px;
+      height:13px;
+      margin:auto;
+      border:3px solid white;
+      border-radius:50%;
+      background:var(--plum2);
+      box-shadow:0 0 0 2px var(--plum2);
+      transform:scale(0);
+      transition:transform .35s ease;
+    }
+
+    .weekly-chart.animate .week-point i{
+      transform:scale(1);
+    }
+
+    .week-point b{
+      display:block;
+      margin-top:-35px;
+      color:var(--plum);
+      font-size:11px;
+    }
+
+    .week-point small{
+      position:absolute;
+      width:70px;
+      left:50%;
+      top:30px;
+      transform:translateX(-50%);
+      color:var(--muted);
+      font-size:8px;
+      font-style:normal;
+    }
+
+    .w1{left:3%;bottom:0}
+    .w2{left:34%;bottom:33%}
+    .w3{left:66%;bottom:66%}
+    .w4{left:97%;bottom:100%}
+
+    .trend-alert{
+      display:flex;
+      gap:10px;
+      align-items:flex-start;
+      margin-top:5px;
+      padding:13px;
+      border-radius:14px;
+      background:#fbf3e8;
+    }
+
+    .trend-alert>span{
+      display:grid;
+      place-items:center;
+      min-width:30px;
+      height:30px;
+      border-radius:9px;
+      background:#f1dfc6;
+      color:#875f29;
+      font-weight:900;
+    }
+
+    .trend-alert small,
+    .trend-alert b{display:block}
+
+    .trend-alert small{
+      color:#8a6a3c;
+      font-size:8px;
+      font-weight:900;
+      letter-spacing:.08em;
+    }
+
+    .trend-alert b{
+      margin-top:3px;
+      font-size:11px;
+    }
+
+    /* ===== DESVIACIÓN ===== */
+
+    .deviation{
+      position:relative;
+      overflow:hidden;
+      border-color:#ead1d5;
+      background:linear-gradient(135deg,#fff,#fcf3f5);
+    }
+
+    .deviation-grid{
+      display:grid;
+      grid-template-columns:55px 1fr;
+      gap:15px;
+    }
+
+    .deviation-icon{
+      display:grid;
+      place-items:center;
+      width:50px;
+      height:50px;
+      border-radius:15px;
+      background:#f3dfe3;
+      color:#9b5360;
+      font-size:22px;
+      font-weight:900;
+    }
+
+    .deviation small{
+      color:#9b5360;
+      font-size:8px;
+      font-weight:900;
+      letter-spacing:.11em;
+    }
+
+    .deviation h2{
+      margin:4px 0 7px;
+      font-size:20px;
+    }
+
+    .deviation p{
+      margin:0;
+      color:var(--muted);
+      font-size:10px;
+      line-height:1.6;
+    }
+
+    .deviation-stats{
+      display:flex;
+      gap:8px;
+      flex-wrap:wrap;
+      margin-top:14px;
+    }
+
+    .deviation-stats span{
+      min-width:105px;
+      padding:9px 11px;
+      border:1px solid #ecdadd;
+      border-radius:11px;
+      background:#fff;
+    }
+
+    .deviation-stats b,
+    .deviation-stats small{display:block}
+
+    .deviation-stats b{
+      color:#8e4d58;
+      font-size:15px;
+    }
+
+    .deviation-stats small{
+      margin-top:2px;
+      color:var(--muted);
+      letter-spacing:0;
+      font-size:8px;
+    }
+
+    .analysis-btn{
+      margin-top:15px;
+      border:0;
+      border-radius:12px;
+      padding:11px 14px;
+      background:var(--plum);
+      color:#fff;
+      font-size:10px;
+      font-weight:900;
+      cursor:pointer;
+    }
+
+    .analysis-panel{
+      display:none;
+      margin-top:13px;
+      padding:14px;
+      border:1px solid #ead8dc;
+      border-radius:13px;
+      background:#fff;
+    }
+
+    .analysis-panel.show{display:block}
+
+    .analysis-panel b{
+      display:block;
+      margin-bottom:6px;
+      font-size:11px;
+    }
+
+    .analysis-panel p{
+      font-size:10px;
+    }
+
+    .pending{
+      display:inline-block;
+      margin-top:9px;
+      padding:6px 8px;
+      border-radius:999px;
+      background:var(--lav);
+      color:var(--plum);
+      font-size:8px;
+      font-weight:900;
+    }
+
+    /* ===== CONCLUSIÓN ===== */
+
+    .report-conclusion{
+      display:grid;
+      grid-template-columns:1fr auto;
+      gap:20px;
+      align-items:center;
+    }
+
+    .report-conclusion h2{
+      margin:5px 0 7px;
+      font-size:18px;
+    }
+
+    .report-conclusion p{
+      margin:0;
+      max-width:580px;
+      color:var(--muted);
+      font-size:10px;
+      line-height:1.6;
+    }
+
+    .global-status{
+      min-width:150px;
+      padding:14px;
+      text-align:center;
+      border-radius:15px;
+      background:var(--sage);
+      color:var(--green);
+    }
+
+    .global-status span,
+    .global-status b,
+    .global-status small{display:block}
+
+    .global-status span{
+      font-size:21px;
+      font-weight:900;
+    }
+
+    .global-status b{
+      margin-top:4px;
+      font-size:11px;
+    }
+
+    .global-status small{
+      margin-top:3px;
+      font-size:8px;
+    }
+
+    .academic-note{
+      margin:12px 5px 0;
+      text-align:center;
+      color:var(--muted);
+      font-size:8px;
+    }
+
+    @media(max-width:650px){
+      .pt-nav{
+        position:relative;
+        top:0;
+        flex-direction:column;
+        align-items:stretch;
+      }
+
+      .pt-nav-brand{justify-content:center}
+
+      .pt-tabs{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+      }
+
+      .pt-tab{padding:10px 6px}
+
+      .report-hero{
+        padding:22px 18px;
+        border-radius:22px;
+      }
+
+      .report-top{
+        flex-direction:column;
+      }
+
+      .period{width:100%}
+
+      .system-state{
+        align-items:flex-start;
+        flex-direction:column;
+      }
+
+      .kpi-grid{
+        grid-template-columns:repeat(2,1fr);
+      }
+
+      .balance-grid{
+        grid-template-columns:1fr;
+      }
+
+      .bar-item{
+        grid-template-columns:75px 1fr 22px;
+      }
+
+      .report-conclusion{
+        grid-template-columns:1fr;
+      }
+
+      .global-status{width:100%}
+
+      .deviation-grid{
+        grid-template-columns:1fr;
+      }
+    }
+  </style>
 </head>
+
 <body>
-  <main class="shell">
+<main class="shell">
+
+  <!-- NAVEGACIÓN -->
+  <nav class="pt-nav">
+    <div class="pt-nav-brand">
+      <span class="pt-logo">PT <b>QC</b></span>
+      PathTrace QC
+    </div>
+
+    <div class="pt-tabs">
+      <button class="pt-tab active" data-target="passportView">
+        Pasaporte AP-001
+      </button>
+      <button class="pt-tab" data-target="reportView">
+        Informe mensual
+      </button>
+    </div>
+  </nav>
+
+
+  <!-- =====================================================
+       PASAPORTE AP-001
+  ====================================================== -->
+
+  <div class="pt-view active" id="passportView">
+
     <header class="hero">
       <div class="brand"><span>PT</span><b>QC</b></div>
-      <div class="eyebrow">PathTrace QC · Sistema digital de trazabilidad y control de calidad</div>
+      <div class="eyebrow">
+        PathTrace QC · Sistema digital de trazabilidad y control de calidad
+      </div>
+
       <h1>Pasaporte Digital de Calidad</h1>
-      <div class="sample-row"><div><small>MUESTRA</small><strong>AP-001</strong></div><span class="status">● PROCESAMIENTO CONFORME</span></div>
-      <div class="summary"><span>✓ Trazabilidad completa</span><span>✓ 7/7 controles superados</span><span>✓ Material archivado</span></div>
+
+      <div class="sample-row">
+        <div>
+          <small>MUESTRA</small>
+          <strong>AP-001</strong>
+        </div>
+        <span class="status">● PROCESAMIENTO CONFORME</span>
+      </div>
+
+      <div class="summary">
+        <span>✓ Trazabilidad completa</span>
+        <span>✓ 7/7 controles superados</span>
+        <span>✓ Material archivado</span>
+      </div>
     </header>
 
+
     <section class="card">
-      <div class="section-title"><span>01</span><h2>Identificación y trazabilidad</h2></div>
+      <div class="section-title">
+        <span>01</span>
+        <h2>Identificación y trazabilidad</h2>
+      </div>
+
       <div class="grid two">
         <div class="field"><small>Código único</small><b>AP-001</b></div>
         <div class="field"><small>Estado</small><b>Finalizado</b></div>
         <div class="field"><small>Tipo de registro</small><b>Control histológico</b></div>
         <div class="field"><small>Registro</small><b>PTQC-AP001</b></div>
       </div>
-      <p class="note">Caso demostrativo ficticio. No contiene datos identificativos de pacientes.</p>
+
+      <p class="note">
+        Caso demostrativo ficticio. No contiene datos identificativos de pacientes.
+      </p>
     </section>
 
+
     <section class="card">
-      <div class="section-title"><span>02</span><h2>Recorrido de la muestra</h2></div>
-      <div class="progress" id="progress">
+      <div class="section-title">
+        <span>02</span>
+        <h2>Recorrido de la muestra</h2>
+      </div>
+
+      <div class="progress">
         <div class="step"><i>✓</i><b>Recepción</b><small>Control superado</small></div>
         <div class="step"><i>✓</i><b>Fijación</b><small>Control superado</small></div>
         <div class="step"><i>✓</i><b>Inclusión</b><small>Control superado</small></div>
@@ -40,8 +838,13 @@
       </div>
     </section>
 
+
     <section class="card">
-      <div class="section-title"><span>03</span><h2>Indicadores de calidad</h2></div>
+      <div class="section-title">
+        <span>03</span>
+        <h2>Indicadores de calidad</h2>
+      </div>
+
       <div class="metrics">
         <article><span>⏱</span><div><b>Tiempo de fijación</b><small>Intervalo establecido</small></div><em>CONFORME</em></article>
         <article><span>◫</span><div><b>Calidad del corte</b><small>Uniformidad e integridad</small></div><em>CONFORME</em></article>
@@ -54,9 +857,17 @@
       </div>
     </section>
 
+
     <section class="card">
-      <div class="section-title"><span>04</span><h2>Historial de trazabilidad</h2></div>
-      <button class="toggle" id="toggleHistory" aria-expanded="false">Ver historial completo <span>⌄</span></button>
+      <div class="section-title">
+        <span>04</span>
+        <h2>Historial de trazabilidad</h2>
+      </div>
+
+      <button class="toggle" id="toggleHistory" aria-expanded="false">
+        Ver historial completo <span>⌄</span>
+      </button>
+
       <div class="timeline collapsed" id="history">
         <div><i></i><p><b>Recepción</b><small>Muestra registrada e identificación verificada.</small></p><strong>✓</strong></div>
         <div><i></i><p><b>Fijación</b><small>Control de conservación superado.</small></p><strong>✓</strong></div>
@@ -68,32 +879,574 @@
       </div>
     </section>
 
+
     <section class="card split">
       <div>
         <div class="section-title"><span>05</span><h2>Incidencias</h2></div>
-        <div class="empty"><b>✓ Sin incidencias registradas</b><p>No se han detectado no conformidades durante el procesamiento de AP-001.</p></div>
+        <div class="empty">
+          <b>✓ Sin incidencias registradas</b>
+          <p>No se han detectado no conformidades durante el procesamiento de AP-001.</p>
+        </div>
       </div>
+
       <div>
         <div class="section-title"><span>06</span><h2>Resultado final</h2></div>
-        <div class="result"><strong>7/7</strong><div><b>CONTROLES SUPERADOS</b><small>Procesamiento conforme · Trazabilidad completa</small></div></div>
+        <div class="result">
+          <strong>7/7</strong>
+          <div>
+            <b>CONTROLES SUPERADOS</b>
+            <small>Procesamiento conforme · Trazabilidad completa</small>
+          </div>
+        </div>
       </div>
     </section>
 
+
     <section class="card">
       <div class="section-title"><span>07</span><h2>Registro de control</h2></div>
+
       <div class="grid two">
         <div class="field"><small>Resultado</small><b>Conforme</b></div>
         <div class="field"><small>Incidencias</small><b>Ninguna</b></div>
         <div class="field"><small>Actuación</small><b>No requerida</b></div>
         <div class="field"><small>Estado del registro</small><b>Cerrado</b></div>
       </div>
-      <div class="stamp">PATH<span>TRACE</span> QC · REGISTRO DEMOSTRATIVO</div>
+
+      <div class="stamp">
+        PATH<span>TRACE</span> QC · REGISTRO DEMOSTRATIVO
+      </div>
     </section>
 
-    <footer>
-      <b>PathTrace QC</b><span>Proyecto académico · Control de calidad en Anatomía Patológica y Citodiagnóstico</span>
-    </footer>
-  </main>
-  <script src="script.js"></script>
+  </div>
+
+
+  <!-- =====================================================
+       INFORME MENSUAL
+  ====================================================== -->
+
+  <div class="pt-view" id="reportView">
+
+    <header class="report-hero">
+
+      <div class="report-top">
+        <div>
+          <div class="eyebrow">
+            PATHTRACE QC · ANÁLISIS GLOBAL DEL SISTEMA
+          </div>
+
+          <h1>Informe mensual de calidad</h1>
+
+          <p>
+            Evaluación simulada de los indicadores registrados durante
+            un mes de actividad del laboratorio.
+          </p>
+        </div>
+
+        <div class="period">
+          <small>PERIODO ANALIZADO</small>
+          <strong>SEPTIEMBRE 2026</strong>
+        </div>
+      </div>
+
+      <div class="system-state">
+        <b>● FUNCIONAMIENTO GENERAL ADECUADO</b>
+        <span>⚠ 1 área prioritaria de mejora</span>
+      </div>
+
+    </header>
+
+
+    <!-- RESUMEN -->
+    <section class="card">
+      <div class="section-title">
+        <span>01</span>
+        <h2>Resumen del mes</h2>
+      </div>
+
+      <div class="kpi-grid">
+
+        <button class="kpi" data-detail="306 muestras fueron registradas durante el periodo analizado.">
+          <small>MUESTRAS RECIBIDAS</small>
+          <strong>306</strong>
+          <span>Actividad mensual</span>
+        </button>
+
+        <button class="kpi good" data-detail="300 muestras cumplieron los criterios establecidos y continuaron el circuito.">
+          <small>MUESTRAS ACEPTADAS</small>
+          <strong>300</strong>
+          <span>98,04 %</span>
+        </button>
+
+        <button class="kpi" data-detail="6 muestras no cumplieron los criterios necesarios para continuar el procesamiento.">
+          <small>MUESTRAS RECHAZADAS</small>
+          <strong>6</strong>
+          <span>1,96 %</span>
+        </button>
+
+        <button class="kpi good" data-detail="Se mantuvo la correspondencia entre muestra, bloque, portaobjetos y registro durante todo el circuito.">
+          <small>TRAZABILIDAD</small>
+          <strong>100 %</strong>
+          <span>Sin pérdidas</span>
+        </button>
+
+        <button class="kpi watch" data-detail="11 preparaciones requirieron repetir alguna parte del procedimiento técnico.">
+          <small>REPETICIONES</small>
+          <strong>11</strong>
+          <span>3,67 %</span>
+        </button>
+
+        <button class="kpi watch" data-detail="Durante el mes se registraron 14 desviaciones o no conformidades distribuidas entre distintas etapas.">
+          <small>NO CONFORMIDADES</small>
+          <strong>14</strong>
+          <span>Registradas</span>
+        </button>
+
+      </div>
+
+      <div class="kpi-detail" id="kpiDetail">
+        Pulsa sobre un indicador para consultar su interpretación.
+      </div>
+    </section>
+
+
+    <!-- BALANCE -->
+    <section class="card">
+      <div class="section-title">
+        <span>02</span>
+        <h2>Balance de calidad</h2>
+      </div>
+
+      <div class="balance-grid">
+
+        <div class="balance-box good">
+          <small>✓ RESULTADOS POSITIVOS</small>
+          <h3>Fortalezas del periodo</h3>
+          <ul>
+            <li>100 % de trazabilidad mantenida.</li>
+            <li>0 pérdidas de muestras o bloques.</li>
+            <li>0 errores de identificación registrados.</li>
+            <li>Archivo completado sin incidencias.</li>
+            <li>Buen comportamiento general de corte y montaje.</li>
+          </ul>
+        </div>
+
+        <div class="balance-box watch">
+          <small>⚠ EN SEGUIMIENTO</small>
+          <h3>Aspectos que requieren vigilancia</h3>
+          <ul>
+            <li>6 muestras rechazadas.</li>
+            <li>11 preparaciones repetidas.</li>
+            <li>14 no conformidades registradas.</li>
+            <li>Aumento progresivo de incidencias en tinción.</li>
+          </ul>
+        </div>
+
+      </div>
+    </section>
+
+
+    <!-- NO CONFORMIDADES POR ETAPA -->
+    <section class="card" id="stageChart">
+      <div class="section-title">
+        <span>03</span>
+        <h2>No conformidades por etapa</h2>
+      </div>
+
+      <p class="chart-note">
+        Pulsa sobre una etapa para consultar el detalle de las incidencias.
+      </p>
+
+      <div class="bars">
+
+        <div class="bar-item"
+             data-stage="Recepción"
+             data-count="2"
+             data-text="Se registraron dos incidencias relacionadas con requisitos de entrada de las muestras.">
+          <span>Recepción</span>
+          <div class="bar-track"><div class="bar-fill" data-width="33%"></div></div>
+          <b>2</b>
+        </div>
+
+        <div class="bar-item"
+             data-stage="Fijación"
+             data-count="1"
+             data-text="Se registró una incidencia relacionada con el control de la fijación.">
+          <span>Fijación</span>
+          <div class="bar-track"><div class="bar-fill" data-width="17%"></div></div>
+          <b>1</b>
+        </div>
+
+        <div class="bar-item"
+             data-stage="Inclusión"
+             data-count="1"
+             data-text="Se registró una incidencia durante el procesamiento e inclusión del tejido.">
+          <span>Inclusión</span>
+          <div class="bar-track"><div class="bar-fill" data-width="17%"></div></div>
+          <b>1</b>
+        </div>
+
+        <div class="bar-item"
+             data-stage="Microtomía"
+             data-count="2"
+             data-text="Dos incidencias afectaron a la calidad técnica de los cortes histológicos.">
+          <span>Microtomía</span>
+          <div class="bar-track"><div class="bar-fill" data-width="33%"></div></div>
+          <b>2</b>
+        </div>
+
+        <div class="bar-item alert"
+             data-stage="Tinción"
+             data-count="6"
+             data-text="La tinción concentra 6 de las 14 no conformidades del mes: contraste insuficiente, tinción irregular y necesidad de repetición de preparaciones.">
+          <span>Tinción ⚠</span>
+          <div class="bar-track"><div class="bar-fill" data-width="100%"></div></div>
+          <b>6</b>
+        </div>
+
+        <div class="bar-item"
+             data-stage="Montaje"
+             data-count="2"
+             data-text="Se registraron dos incidencias técnicas relacionadas con la preparación definitiva.">
+          <span>Montaje</span>
+          <div class="bar-track"><div class="bar-fill" data-width="33%"></div></div>
+          <b>2</b>
+        </div>
+
+        <div class="bar-item"
+             data-stage="Archivo"
+             data-count="0"
+             data-text="No se registraron incidencias durante el archivo del material.">
+          <span>Archivo</span>
+          <div class="bar-track"><div class="bar-fill" data-width="0%"></div></div>
+          <b>0</b>
+        </div>
+
+      </div>
+
+      <div class="stage-detail" id="stageDetail">
+        <small>ETAPA SELECCIONADA</small>
+        <b id="stageTitle"></b>
+        <p id="stageText"></p>
+      </div>
+    </section>
+
+
+    <!-- EVOLUCIÓN SEMANAL -->
+    <section class="card">
+      <div class="section-title">
+        <span>04</span>
+        <h2>Evolución semanal · Tinción</h2>
+      </div>
+
+      <p class="chart-note">
+        Incidencias registradas en la etapa de tinción durante las cuatro semanas.
+      </p>
+
+      <div class="weekly-chart" id="weeklyChart">
+
+        <div class="weekly-grid">
+          <span></span>
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+
+        <div class="weekly-points">
+
+          <svg class="trend-svg"
+               viewBox="0 0 100 100"
+               preserveAspectRatio="none">
+            <polyline
+              class="trend-path"
+              points="3,100 34,67 66,34 97,0">
+            </polyline>
+          </svg>
+
+          <div class="week-point w1">
+            <i></i><b>0</b><small>SEMANA 1</small>
+          </div>
+
+          <div class="week-point w2">
+            <i></i><b>1</b><small>SEMANA 2</small>
+          </div>
+
+          <div class="week-point w3">
+            <i></i><b>2</b><small>SEMANA 3</small>
+          </div>
+
+          <div class="week-point w4">
+            <i></i><b>3</b><small>SEMANA 4</small>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="trend-alert">
+        <span>↗</span>
+        <div>
+          <small>TENDENCIA DETECTADA</small>
+          <b>Incremento progresivo de incidencias</b>
+        </div>
+      </div>
+    </section>
+
+
+    <!-- DESVIACIÓN -->
+    <section class="card deviation">
+
+      <div class="deviation-grid">
+
+        <div class="deviation-icon">!</div>
+
+        <div>
+          <small>DESVIACIÓN PRIORITARIA DETECTADA</small>
+          <h2>Calidad de la tinción</h2>
+
+          <p>
+            La tinción concentra 6 de las 14 no conformidades registradas
+            durante el mes y presenta un incremento progresivo a lo largo
+            de las cuatro semanas analizadas.
+          </p>
+
+          <div class="deviation-stats">
+            <span><b>6</b><small>incidencias</small></span>
+            <span><b>42,9 %</b><small>del total</small></span>
+            <span><b>0 → 3</b><small>evolución semanal</small></span>
+          </div>
+
+          <button class="analysis-btn" id="analysisBtn">
+            Analizar no conformidad →
+          </button>
+
+          <div class="analysis-panel" id="analysisPanel">
+            <b>Investigación requerida</b>
+            <p>
+              La concentración y el aumento progresivo de incidencias indican
+              que debe investigarse su origen antes de establecer las acciones
+              correctivas y preventivas correspondientes.
+            </p>
+
+            <span class="pending">
+              ANÁLISIS DE CAUSA · PUNTO 5
+            </span>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+
+    <!-- CONCLUSIÓN -->
+    <section class="card report-conclusion">
+
+      <div>
+        <small>CONCLUSIÓN DEL INFORME</small>
+        <h2>Funcionamiento general adecuado</h2>
+
+        <p>
+          El sistema mantiene la trazabilidad completa y presenta resultados
+          favorables en la mayoría de los controles. PathTrace QC ha permitido
+          identificar una desviación progresiva en la etapa de tinción que
+          requiere investigación y seguimiento.
+        </p>
+      </div>
+
+      <div class="global-status">
+        <span>✓</span>
+        <b>CONTROL GLOBAL</b>
+        <strong>ADECUADO</strong>
+        <small>con área prioritaria de mejora</small>
+      </div>
+
+    </section>
+
+    <p class="academic-note">
+      Datos simulados con finalidad académica para evaluar el funcionamiento
+      del sistema de control de calidad.
+    </p>
+
+  </div>
+
+
+  <footer>
+    <b>PathTrace QC</b>
+    <span>
+      Proyecto académico · Control de calidad en Anatomía Patológica y Citodiagnóstico
+    </span>
+  </footer>
+
+</main>
+
+
+<script>
+  /* ===== NAVEGACIÓN ===== */
+
+  const tabs = document.querySelectorAll('.pt-tab');
+  const views = document.querySelectorAll('.pt-view');
+
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+
+      tabs.forEach(t => t.classList.remove('active'));
+      views.forEach(v => v.classList.remove('active'));
+
+      tab.classList.add('active');
+
+      const target = document.getElementById(tab.dataset.target);
+      target.classList.add('active');
+
+      if(tab.dataset.target === 'reportView'){
+        animateReport();
+      }
+
+      window.scrollTo({
+        top:0,
+        behavior:'smooth'
+      });
+    });
+  });
+
+
+  /* ===== HISTORIAL AP-001 ===== */
+
+  const historyBtn = document.getElementById('toggleHistory');
+  const history = document.getElementById('history');
+
+  if(historyBtn && history){
+    historyBtn.addEventListener('click', () => {
+
+      const open = !history.classList.contains('collapsed');
+
+      history.classList.toggle('collapsed');
+
+      historyBtn.setAttribute(
+        'aria-expanded',
+        String(!open)
+      );
+
+      historyBtn.innerHTML =
+        `${open ? 'Ver historial completo' : 'Ocultar historial'}
+        <span>${open ? '⌄' : '⌃'}</span>`;
+    });
+  }
+
+
+  /* ===== INDICADORES INTERACTIVOS ===== */
+
+  const kpis = document.querySelectorAll('.kpi');
+  const kpiDetail = document.getElementById('kpiDetail');
+
+  kpis.forEach(kpi => {
+
+    kpi.addEventListener('click', () => {
+
+      const alreadySelected =
+        kpi.classList.contains('selected');
+
+      kpis.forEach(item =>
+        item.classList.remove('selected')
+      );
+
+      if(alreadySelected){
+        kpiDetail.classList.remove('show');
+        return;
+      }
+
+      kpi.classList.add('selected');
+
+      kpiDetail.textContent =
+        kpi.dataset.detail;
+
+      kpiDetail.classList.add('show');
+    });
+
+  });
+
+
+  /* ===== DETALLE POR ETAPA ===== */
+
+  const stages = document.querySelectorAll('.bar-item');
+  const stageDetail = document.getElementById('stageDetail');
+  const stageTitle = document.getElementById('stageTitle');
+  const stageText = document.getElementById('stageText');
+
+  stages.forEach(stage => {
+
+    stage.addEventListener('click', () => {
+
+      const active =
+        stage.classList.contains('active');
+
+      stages.forEach(item =>
+        item.classList.remove('active')
+      );
+
+      if(active){
+        stageDetail.classList.remove('show');
+        return;
+      }
+
+      stage.classList.add('active');
+
+      stageTitle.textContent =
+        `${stage.dataset.stage} · ${stage.dataset.count} incidencias`;
+
+      stageText.textContent =
+        stage.dataset.text;
+
+      stageDetail.classList.add('show');
+    });
+
+  });
+
+
+  /* ===== ANÁLISIS DE NO CONFORMIDAD ===== */
+
+  const analysisBtn =
+    document.getElementById('analysisBtn');
+
+  const analysisPanel =
+    document.getElementById('analysisPanel');
+
+  analysisBtn.addEventListener('click', () => {
+
+    const visible =
+      analysisPanel.classList.toggle('show');
+
+    analysisBtn.textContent =
+      visible
+      ? 'Ocultar análisis ↑'
+      : 'Analizar no conformidad →';
+
+  });
+
+
+  /* ===== ANIMACIONES ===== */
+
+  function animateReport(){
+
+    const bars =
+      document.querySelectorAll('.bar-fill');
+
+    bars.forEach(bar => {
+      bar.style.width = '0';
+
+      setTimeout(() => {
+        bar.style.width =
+          bar.dataset.width;
+      },150);
+    });
+
+    const weekly =
+      document.getElementById('weeklyChart');
+
+    weekly.classList.remove('animate');
+
+    setTimeout(() => {
+      weekly.classList.add('animate');
+    },250);
+  }
+</script>
+
 </body>
 </html>
