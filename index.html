@@ -24,7 +24,7 @@
       border-radius:17px;
       box-shadow:0 8px 30px rgba(61,44,65,.08);
       backdrop-filter:blur(12px);
-    }
+    } 
 
     .pt-nav-brand{
       display:flex;
@@ -748,11 +748,86 @@
         grid-template-columns:1fr;
       }
     }
-  </style>
+ 
+/* TABLA INTERACTIVA DE CALIDAD */
+
+.qc-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12px;
+  margin-top: 16px;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.qc-table th {
+  background: #59445f;
+  color: white;
+  padding: 14px 10px;
+  text-align: left;
+  font-size: 10px;
+}
+
+.qc-table td {
+  padding: 13px 10px;
+  border-bottom: 1px solid #e8e1e9;
+}
+
+.qc-table tbody tr {
+  cursor: pointer;
+  background: white;
+  transition: background 0.2s;
+}
+
+.qc-table tbody tr:nth-child(even) {
+  background: #fbf9fb;
+}
+
+.qc-table tbody tr:hover,
+.qc-table tbody tr.selected {
+  background: #eee8f2;
+}
+
+.qc-table td:last-child {
+  font-weight: 700;
+}
+
+.qc-table tbody tr:nth-child(3) td:last-child,
+.qc-table tbody tr:nth-child(6) td:last-child {
+  color: #a14f60;
+}
+
+.qc-explanation {
+  margin-top: 14px;
+  padding: 15px;
+  border-radius: 12px;
+  background: #eee8f2;
+  color: #59445f;
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.qc-explanation[hidden] {
+  display: none;
+}
+
+.qc-note {
+  margin-top: 12px;
+  color: #746d77;
+  font-size: 10px;
+  line-height: 1.5;
+}
+
+@media (max-width: 650px) {
+  .qc-table {
+    min-width: 540px;
+  }
+}
+ </style>
 </head>
 
 <body>
-<main class="shell">
+<main class="shell">(
 
   <!-- NAVEGACIÓN -->
   <nav class="pt-nav">
@@ -1008,6 +1083,83 @@
       </div>
     </section>
 
+
+<!-- COMPARACIÓN CON OBJETIVOS DE CALIDAD -->
+<section class="card" id="qualityStandards">
+  <div class="section-title">
+    <span>02</span>
+    <h2>Comparación con los objetivos de calidad</h2>
+  </div>
+
+  <p>
+    Comparamos los resultados simulados de septiembre de 2026
+    con los objetivos internos establecidos para el laboratorio.
+    Pulsa sobre cada indicador para conocer su interpretación.
+  </p>
+
+  <div style="overflow-x:auto">
+    <table class="qc-table">
+      <thead>
+        <tr>
+          <th>INDICADOR</th>
+          <th>OBJETIVO INTERNO</th>
+          <th>RESULTADO</th>
+          <th>EVALUACIÓN</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr data-explanation="La trazabilidad alcanzó el 100 %. Todas las muestras procesadas conservaron su identificación y seguimiento.">
+          <td>Trazabilidad</td>
+          <td>100 %</td>
+          <td>100 %</td>
+          <td>✓ Cumple</td>
+        </tr>
+
+        <tr data-explanation="Se rechazaron 6 de las 306 muestras recibidas, lo que representa el 1,96 %. No supera el límite interno del 2 %.">
+          <td>Rechazo de muestras</td>
+          <td>≤ 2 %</td>
+          <td>1,96 %</td>
+          <td>✓ Cumple</td>
+        </tr>
+
+        <tr data-explanation="Se repitieron 11 de las 300 preparaciones procesadas, equivalentes al 3,67 %. Supera el objetivo interno del 3 % y requiere seguimiento.">
+          <td>Repetición de preparaciones</td>
+          <td>≤ 3 %</td>
+          <td>3,67 %</td>
+          <td>⚠ No cumple</td>
+        </tr>
+
+        <tr data-explanation="No se registraron errores de identificación durante el periodo simulado.">
+          <td>Errores de identificación</td>
+          <td>0</td>
+          <td>0</td>
+          <td>✓ Cumple</td>
+        </tr>
+
+        <tr data-explanation="No se registraron pérdidas de muestras ni bloques durante el periodo.">
+          <td>Pérdidas de muestras</td>
+          <td>0</td>
+          <td>0</td>
+          <td>✓ Cumple</td>
+        </tr>
+
+        <tr data-explanation="Se registraron 6 incidencias de tinción, superando el objetivo interno de un máximo de 2 al mes. Esta desviación requiere investigación.">
+          <td>Incidencias de tinción</td>
+          <td>≤ 2 al mes</td>
+          <td>6</td>
+          <td>⚠ No cumple</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div id="qcExplanation" class="qc-explanation" hidden></div>
+
+  <p class="qc-note">
+    Objetivos internos propuestos para esta simulación académica.
+    No representan límites oficiales de una normativa.
+  </p>
+</section>
 
     <!-- BALANCE -->
     <section class="card">
@@ -1277,6 +1429,51 @@
 
 </main>
 
+
+/* INTERACTIVIDAD DE LA TABLA DE CALIDAD */
+
+const qcRows = document.querySelectorAll(
+  '#qualityStandards .qc-table tbody tr'
+);
+
+const qcExplanation = document.getElementById(
+  'qcExplanation'
+);
+
+qcRows.forEach(row => {
+  row.setAttribute('tabindex', '0');
+  row.setAttribute('role', 'button');
+
+  function showExplanation() {
+    const alreadySelected =
+      row.classList.contains('selected');
+
+    qcRows.forEach(item => {
+      item.classList.remove('selected');
+    });
+
+    if (alreadySelected) {
+      qcExplanation.hidden = true;
+      return;
+    }
+
+    row.classList.add('selected');
+    qcExplanation.textContent =
+      row.dataset.explanation;
+
+    qcExplanation.hidden = false;
+  }
+
+  row.addEventListener('click', showExplanation);
+
+  row.addEventListener('keydown', event => {
+    if (event.key === 'Enter' ||
+        event.key === ' ') {
+      event.preventDefault();
+      showExplanation();
+    }
+  });
+});
 
 <script>
   /* ===== NAVEGACIÓN ===== */
