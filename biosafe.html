@@ -8,7 +8,10 @@
 </style>
 </head>
 <body>
-<header><div class="inner"><div class="brand">PathTrace <span>✦ BioSafe</span></div><nav class="nav"><a href="./index.html">← PathTrace QC</a><a href="#mapa">Mapa</a><a href="#riesgos">Riesgos</a><a href="#simulador">Simulador</a><a href="#asistente">Asistente</a><a href="#registro">Registro</a></nav></div></header>
+<header><div class="inner"><div class="brand">PathTrace <span>✦ BioSafe</span></div><nav class="nav"><a href="./index.html">← PathTrace QC</a><a href="#mapa">Mapa</a><a href="#riesgos">Riesgos</a><a href="#simulador">Simulador</a><a href="#asistente">Asistente</a>
+<a href="#registro">Registro</a>
+<a href="#emergencias">🚨 Emergencias</a></nav>
+</div></header>
 <main>
 <section class="hero"><div><span class="eyebrow">Módulo de prevención · Laboratorio de Anatomía Patológica</span><h1>Un laboratorio más seguro empieza aquí.</h1><p>Explora las zonas de trabajo, identifica peligros, consulta medidas preventivas y practica la respuesta ante situaciones de riesgo. Un mismo laboratorio, una gestión integrada.</p><span class="pill">Formación · Prevención · Calidad</span> <span class="pill">Proyecto académico demostrativo</span></div><div class="shield" aria-hidden="true">🛡️</div></section>
 <section class="section"><div class="grid"><div class="card"><span class="tag">01 / Prevenir</span><h3>Identificar</h3><p>Relaciona cada zona con sus posibles riesgos y las medidas preventivas correspondientes.</p></div><div class="card"><span class="tag">02 / Actuar</span><h3>Practicar</h3><p>Resuelve incidentes simulados y consulta las actuaciones previstas en el plan.</p></div><div class="card"><span class="tag">03 / Mejorar</span><h3>Registrar</h3><p>Documenta incidentes ficticios y plantea acciones para evitar su repetición.</p></div></div></section>
@@ -17,9 +20,29 @@
 <section class="section" id="simulador"><h2>Simulador de incidentes</h2><p class="sub">Entrenamiento educativo: elige la respuesta inicial más adecuada. Los protocolos oficiales del centro siempre prevalecen.</p><div class="two"><div class="card"><label for="scenario">Escenario</label><select id="scenario"><option value="0">Pinchazo con material potencialmente contaminado</option><option value="1">Derrame de reactivo químico</option><option value="2">Fallo de la extracción localizada</option></select><p id="scenarioText" class="case"></p><div id="options"></div><div id="feedback" role="status"></div></div><div class="card"><span class="tag">Formación continua</span><h3>Cómo usamos el simulador</h3><p>Las decisiones se acompañan de una explicación breve para comprender la prioridad de la seguridad, la notificación y el seguimiento.</p><p class="note">En el informe técnico se incluirán los protocolos completos de exposición biológica, derrames, pinchazos, incendios, evacuación y fallos de equipos críticos.</p><div class="stat" id="progress">0 / 3</div><p>Escenarios practicados en esta sesión</p></div></div></section>
 <section class="section" id="asistente"><h2>Asistente BioSafe</h2><p class="sub">Consulta educativa gratuita basada en respuestas predefinidas. No usa inteligencia artificial generativa ni sustituye el protocolo del laboratorio.</p><div class="card"><div class="chatbox" id="chat" aria-live="polite"><div class="bubble">Hola, soy el asistente BioSafe. Prueba a preguntarme por «xileno», «pinchazo», «residuos», «formaldehído» o «EPI».</div></div><form class="chatrow" id="chatForm"><input id="question" placeholder="Escribe tu pregunta…" aria-label="Pregunta para el asistente" maxlength="300" required><button class="btn">Enviar</button></form><div class="controls"><button class="btn alt" type="button" data-q="¿Qué riesgos tiene el xileno?">Xileno</button><button class="btn alt" type="button" data-q="¿Qué hago ante un pinchazo?">Pinchazo</button><button class="btn alt" type="button" data-q="¿Qué EPI necesito?">EPI</button></div></div></section>
 <section class="section" id="registro"><h2>Registro simulado de incidentes</h2><p class="sub">Ejercicio de trazabilidad: datos ficticios y almacenamiento solo en esta sesión. No introducir datos reales ni información personal.</p><div class="two"><form class="card" id="incidentForm"><label for="date">Fecha</label><input id="date" type="date" required><label for="area">Zona</label><select id="area"><option>Recepción de muestras</option><option>Macroscopia</option><option>Procesamiento</option><option>Microtomía / Criostato</option><option>Tinción</option><option>Gestión de residuos</option></select><label for="type">Tipo de incidente</label><select id="type"><option>Exposición biológica</option><option>Derrame químico</option><option>Corte / pinchazo</option><option>Fallo de equipo</option><option>Otro</option></select><label for="action">Medida correctiva propuesta (sin nombres ni datos personales)</label><textarea id="action" rows="3" maxlength="400" required placeholder="Ej.: Revisar la formación y señalización de la zona"></textarea><div class="controls"><button class="btn" type="submit">Añadir registro ficticio</button><button class="btn alt" type="button" id="clearRecords">Borrar registros</button></div></form><div class="card"><h3>Registro de práctica</h3><div id="records"><p>No hay incidentes ficticios registrados.</p></div><p class="note">Los registros se eliminan al recargar la página. No constituye un sistema de notificación oficial.</p></div></div></section>
-</main><footer class="footer">PathTrace BioSafe · Proyecto intermodular de Anatomía Patológica · Versión académica inicial · Sin servicios de pago</footer>
+</main>
+
+<section class="section" id="emergencias">
+  <h2>🚨 Panel de emergencias</h2>
+  <div class="card" style="text-align:center;">
+    <p>Consulta la infografía de seguridad
+    del laboratorio PathTrace BioSafe.</p>
+
+    <img src="infografia-biosafe.png"
+         alt="Infografía de emergencias"
+         style="width:100%;max-width:750px;height:auto;">
+
+    <p>
+      <a href="infografia-biosafe.png"
+         target="_blank">
+        🔍 Ver infografía ampliada
+      </a>
+    </p>
+  </div>
+</section>
+<footer class="footer">PathTrace BioSafe · Proyecto intermodular de Anatomía Patológica · Versión académica inicial · Sin servicios de pago</footer>
 <script>
-'use strict';
+'use strict'; 
 const zones=[
  {id:'recepcion',icon:'📦',name:'Recepción',category:'Biológico',risk:'Contacto accidental con recipientes contaminados, fugas o salpicaduras de muestras.',prevention:'Comprobar integridad y etiquetado; aplicar precauciones estándar; disponer de procedimiento para derrames.'},
  {id:'macro',icon:'🔬',name:'Macroscopia',category:'Biológico · Químico · Físico',risk:'Contacto con tejido, instrumental cortante y posible exposición a fijadores.',prevention:'Usar equipos de protección adecuados, manipular con precaución y trabajar con extracción localizada cuando proceda.'},
